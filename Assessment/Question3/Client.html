@@ -1,0 +1,126 @@
+<html>
+    <head>
+        <style>
+            h1, nav{
+                background-color: lightsalmon;
+                height: 50px;
+                width: 100%;
+                text-align: center;
+            }
+            .section{
+                display: inline-block;
+                margin:5px;
+                width: 45%;
+                background-color: lightskyblue;
+                vertical-align: top;
+            }
+            a{
+                width: 100px;
+                height: 40px;
+                padding: 5px;
+                margin:5px;
+                align-content: center;
+                margin-left:15%;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+        <script>    
+            const url = "http://localhost:1234/employees";
+            function saveChanges(){
+                let obj ={};
+             //take the values from the inputs..
+                obj.empId = $("#sId").text();
+                obj.empName = $("#empName").val();
+                obj.empAddress = $("#empAddress").val();
+                obj.empSalary = $("#empSalary").val();
+                //Use this function for Put and post operation
+                $.ajax({
+                    method : 'PUT',
+                    url : url,
+                    data : obj,
+                    success : (data)=>{
+                        alert(data);
+                    }
+                })
+             //call the ajax of jquery to put the data into the server...section
+            }
+            function findRecord(){
+                $("div").hide(2000);
+                $("div:eq(1)").show(2000);
+                const id = $(this).attr("eId");
+                let temp = url + "/" + id;
+                $.get(temp, (data) => {
+                    let emp = JSON.parse(data);
+                    $("#sId").text(emp.empId);
+                    $("#empName").val(emp.empName);
+                    $("#empAddress").val(emp.empAddress);
+                    $("#empSalary").val(emp.empSalary);
+                })
+            }
+            function showAddDiv(){
+                $("div").hide(2000);
+                $("div:last").show(2000);
+            }
+
+            function addChanges(){
+                //create the object
+                let obj = { };
+                debugger;
+                //fill the data into the object
+                obj.empId = $("#newId").val();
+                obj.empName = $("#newName").val();
+                obj.empAddress = $("#newAddress").val();
+                obj.empSalary = $("#newSalary").val();
+                $.post(url, obj, (data)=>{
+                    alert(data);
+                    $("input").val("");
+                    $("div").hide(2000);
+                })
+                //call the post operation of the jquery ajax....
+                //display the message
+            }
+            function init(){
+                $("div").hide(2000);
+               $("a:first").click(populateData);
+               $("a:eq(1)").click(showAddDiv);
+                $("button:eq(0)").click(saveChanges);
+                $("button:eq(1)").click(addChanges);
+            }
+            $(document).ready(init);
+        </script>
+    </head>
+    <body>
+        <nav>
+            <a href="#">Show All</a>
+            <a href="#">Add New</a>
+        </nav>
+        <div class="section">
+            <table border="1">
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Employee Name</th>
+                    <th>Employee Address</th>
+                    <th>Employee Phone</th>
+                    <th>Options</th>
+                </tr>
+            </table>
+        </div>
+        <div class="section">
+            <h2>Details of the Employee</h2>
+            <p>Employee ID: <span id="sId"></span></p>
+            <p>Employee Name : <input id="empName"/></p>
+            <p>Employee Address : <input id="empAddress"/></p>
+            <p>Employee Salary : <input id="empSalary"/></p>
+            <p><button>Save Changes</button></p>
+        </div>
+        <div class="section">
+            <h2>Register New Employee</h2>
+            <p>Employee ID: <input id="newId" /></p>
+            <p>Employee Name : <input id="newName" /></p>
+            <p>Employee Address : <input id="newAddress" /></p>
+            <p>Employee Salary : <input id="newSalary" /></p>
+            <p><button>Add Employee</button></p>
+        </div>
+    </body>
+</html>
